@@ -1,58 +1,102 @@
-import React, { useState } from "react";
-import SimpleWYSIWYGEditor from "./components/ui/SimpleWYSIWYGEditor";
+// src/App.tsx
+import React, { useState, useEffect } from "react";
+import Layout from "./components/layout"; // ✅ Import your layout
 import "./App.css";
-import { Card, CardHeader, CardTitle } from "./components/ui/card";
-import Logo from "../public/light.svg";
+import { MarkdownEditor } from "./components/markdown-editor";
+import { getFileContent } from "./lib/initialFileContents";
 
 const App: React.FC = () => {
-  const [content, setContent] = useState<string>(
-    "<p>Welcome to the simple WYSIWYG editor!</p><p>Start editing this text or create new content.</p>"
-  );
+  // State for managing multiple files
+  const [currentFile, setCurrentFile] = useState<string>("claude-code.mdx");
+  const [fileContents, setFileContents] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const handleContentChange = (newContent: string): void => {
-    setContent(newContent);
+  // Load initial file content
+  useEffect(() => {
+    const loadInitialContent = async () => {
+      try {
+        const content = await getFileContent(currentFile);
+        setFileContents((prev) => ({
+          ...prev,
+          [currentFile]: content,
+        }));
+      } catch (error) {
+        console.error("Error loading initial content:", error);
+        setFileContents((prev) => ({
+          ...prev,
+          [currentFile]: `# Error\nCould not load content for ${currentFile}`,
+        }));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialContent();
+  }, []);
+
+  const handleFileSelect = async (fileName: string) => {
+    setCurrentFile(fileName);
+
+    // Load content if not already cached
+    if (!fileContents[fileName]) {
+      try {
+        const content = await getFileContent(fileName);
+        setFileContents((prev) => ({
+          ...prev,
+          [fileName]: content,
+        }));
+      } catch (error) {
+        console.error(`Error loading content for ${fileName}:`, error);
+        setFileContents((prev) => ({
+          ...prev,
+          [fileName]: `# Error\nCould not load content for ${fileName}`,
+        }));
+      }
+    }
   };
 
-  const clearContent = (): void => {
-    setContent("");
+  const handleMarkdownChange = (value: string) => {
+    setFileContents((prev) => ({
+      ...prev,
+      [currentFile]: value,
+    }));
   };
 
-  const getWordCount = (): number => {
-    const textContent = content.replace(/<[^>]*>/g, "").trim();
-    return textContent ? textContent.split(/\s+/).length : 0;
-  };
+  if (isLoading) {
+    return (
+      <Layout currentFile={currentFile} onFileSelect={handleFileSelect}>
+        <div className="app">
+          <main className="app-main">
+            <div className="editor-container">
+              <div className="max-w-9xl mx-auto p-4">
+                <div className="flex items-center justify-center h-64">
+                  Loading...
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
-    <div className="app">
-      <main className="app-main">
-        <Card className="header-card">
-          <CardHeader>
-            <img src={Logo} alt="logo" style={{ width: "300px" }} />
-            <CardTitle>Simple WYSIWYG Editor built for Mintlify</CardTitle>
-          </CardHeader>
-        </Card>
-
-        <div className="editor-container">
-          <SimpleWYSIWYGEditor
-            value={content}
-            onChange={handleContentChange}
-            placeholder="Start typing your content..."
-          />
-
-          <div className="editor-actions">
-            <button onClick={clearContent} className="clear-btn">
-              Clear Content
-            </button>
-            <div className="word-count">Words: {getWordCount()}</div>
+    <Layout currentFile={currentFile} onFileSelect={handleFileSelect}>
+      <div className="app">
+        <main className="app-main">
+          <div className="editor-container">
+            <div className="max-w-9xl mx-auto">
+              <MarkdownEditor
+                key={currentFile} // Force re-render when file changes
+                initialValue={fileContents[currentFile] || ""}
+                onChange={handleMarkdownChange}
+                className="w-full"
+              />
+            </div>
           </div>
-        </div>
-
-        <div className="output-container">
-          <h3>HTML Output</h3>
-          <pre className="html-output">{content}</pre>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </Layout>
   );
 };
 
