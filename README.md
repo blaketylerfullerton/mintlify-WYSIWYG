@@ -4,7 +4,14 @@ A modern, full-featured Markdown documentation editor built specifically for cre
 
 ![Mintlify Logo](public/light.svg)
 
-## ✨ Features
+# This was built as a demonstration for the mintlify team
+
+## ✨ Custom Features
+- **Custom Components**:
+  - Mimics Mintlify's components
+  - Built for reusability and theme compliance
+
+
 
 ### 📝 Advanced Markdown Editor
 
