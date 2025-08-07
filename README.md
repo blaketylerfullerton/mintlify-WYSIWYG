@@ -88,7 +88,7 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 3. **Start development server**
 
    ```bash
-   pnpm dev
+   pnpm run dev
    ```
 
 4. **Open in browser**
