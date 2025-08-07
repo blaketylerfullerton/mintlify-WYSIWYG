@@ -83,7 +83,7 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 
    ```bash
    git clone https://github.com/blaketylerfullerton/mintlify-WYSIWYG
-   cd mintlify-app
+   cd mintlify-WYSIWYG
    ```
 
 2. **Install dependencies**
