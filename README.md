@@ -83,7 +83,7 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 
    ```bash
    git clone https://github.com/blaketylerfullerton/mintlify-WYSIWYG
-   cd mintlify-WYSIWYG
+   cd mintlify-app
    ```
 
 2. **Install dependencies**
@@ -115,6 +115,57 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 3. **Markdown Editing**: Type in the left pane with toolbar assistance
 4. **Live Processing**: Custom markdown syntax is parsed in real-time
 5. **Preview Rendering**: Right pane shows the rendered output with styled components
+
+### **Interactive Preview (Two‑way Editing)**
+
+The preview pane now supports inline editing for headings, paragraphs, list items, and front matter (`title`, `description`). Edits in the preview update the underlying markdown source.
+
+- **Where**: `src/components/preview.tsx` and `src/components/markdown-editor.tsx`
+- **Data flow**:
+  - `MarkdownEditor` owns `markdown` state and passes it to `Preview` with `onChange`.
+  - `Preview` renders markdown and attaches contentEditable handlers that emit updates back up.
+
+#### Rendering and event handling
+- Elements made editable: `h1`, `h2`, `h3`, `p`, `li`, and front matter header/description when present.
+- Event lifecycle:
+  - onFocus: capture original text in a ref.
+  - onKeyDown: Enter prevents newline and forces blur/commit.
+  - onBlur: compare original vs current text and compute a source markdown update.
+
+#### Update strategy (safe, structure‑preserving)
+- Front matter preservation:
+  - `rebuildWithContent(originalMarkdown, updatedContent)` retains the YAML block at the top and replaces only the content region.
+  - Title/description edits update YAML lines; if front matter is missing, it is injected.
+- Avoid touching code fences:
+  - `replaceOutsideCodeFences(source, search, replacement)` finds the first match outside triple‑backtick regions and replaces it.
+- Headings:
+  - Exact line replacement using level‑anchored regex: `^#{level}\s+{old}\s*$` → `#{level} {new}` (multiline mode).
+- Lists:
+  - Preserve marker/indent and replace item text only: `^(\s*(?:[-*+]|\d+\.)\s+){old}$` → `$1{new}`.
+- Paragraphs:
+  - First occurrence replacement outside code fences to minimize unintended changes in large docs.
+
+```ts
+// Headings (example for level 2)
+const pattern = new RegExp(`^${'#'.repeat(2)}\\s+${escape(old)}\\s*$`, 'm');
+content = content.replace(pattern, `## ${newText}`);
+
+// Lists
+const list = new RegExp(`^(\\s*(?:[-*+]|\\d+\.)\\s+)${escape(old)}\\s*$`, 'm');
+content = content.replace(list, `$1${newText}`);
+
+// Paragraphs (outside code fences)
+content = replaceOutsideCodeFences(content, old, newText);
+```
+
+#### Front matter editing
+- If YAML exists, `title` and `description` keys are updated or appended within the block.
+- If missing, a minimal YAML block is injected at the top with the updated key.
+
+#### Limitations and trade‑offs
+- First‑match semantics for paragraph replacement; identical duplicates update the first one.
+- Custom components and code blocks are intentionally not made editable in this pass.
+- Complex nested markdown edge cases may require AST‑position mapping in the future for perfect fidelity.
 
 ### **Custom Component Syntax**
 
