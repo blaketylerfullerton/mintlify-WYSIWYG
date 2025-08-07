@@ -3,6 +3,8 @@ import { cursorContent } from "../mdx-files/cursor";
 import { windsurfContent } from "../mdx-files/windsurf";
 import { introductionContent } from "../mdx-files/introduction";
 import { customComponents } from "../mdx-files/custom-components";
+import { testComponentsContent } from "../mdx-files/test-components";
+
 export interface FileConfig {
   path: string;
   title: string;
@@ -11,6 +13,13 @@ export interface FileConfig {
 }
 
 export const fileConfigs: Record<string, FileConfig> = {
+  "test-components.mdx": {
+    path: "examples/test-components.mdx",
+    title: "Test Components",
+    folder: "examples",
+    tags: ["components", "examples", "test"],
+  },
+
   "custom-components.mdx": {
     path: "blakes-components/custom-components.mdx",
     title: "Custom Components",
@@ -55,6 +64,12 @@ export async function getFileContent(fileName: string): Promise<string> {
 
 function getTemplateContent(fileName: string, config: FileConfig): string {
   switch (fileName) {
+    case "test-components.mdx":
+      return testComponentsContent.replace(
+        "# Testing Custom Components",
+        `# ${config.title}`
+      );
+
     case "claude-code.mdx":
       return claudeCodeContent.replace(
         "# Claude Code Guide",

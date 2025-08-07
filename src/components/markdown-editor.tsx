@@ -207,7 +207,12 @@ console.log(example);
         </div>
 
         {/* Preview Pane */}
-        {showPreview && <Preview markdown={markdown} />}
+        {showPreview && (
+          <Preview
+            markdown={markdown}
+            onChange={(value) => handleMarkdownChange(value)}
+          />
+        )}
       </div>
     </div>
   );

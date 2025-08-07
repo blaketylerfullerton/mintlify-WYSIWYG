@@ -7,8 +7,11 @@ import {
   ExternalLink,
   Copy,
   Check,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { Card } from "./ui/card";
+import { cn } from "../lib/utils";
 export interface NoteProps {
   type?: "info" | "warning" | "success" | "error";
   title?: string;
@@ -241,6 +244,113 @@ export const Code: React.FC<CodeProps> = ({ language, filename, children }) => {
           <code>{children}</code>
         </pre>
       </div>
+    </div>
+  );
+};
+
+export interface AccordionGroupProps {
+  children: React.ReactNode;
+}
+
+export const AccordionGroup: React.FC<AccordionGroupProps> = ({ children }) => {
+  return (
+    <div className="space-y-2 my-4">
+      {children}
+    </div>
+  );
+};
+
+export interface AccordionProps {
+  icon?: string;
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Accordion: React.FC<AccordionProps> = ({ 
+  icon = "chevron-right", 
+  title, 
+  children 
+}) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const getIcon = () => {
+    switch (icon) {
+      case "copy":
+        return "📋";
+      case "rectangle-terminal":
+        return "💻";
+      case "chevron-right":
+        return isOpen ? "🔽" : "▶️";
+      default:
+        return icon || "▶️";
+    }
+  };
+
+  return (
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between text-left transition-colors"
+      >
+        <div className="flex items-center space-x-2">
+          <span className="text-lg">{getIcon()}</span>
+          <span className="font-medium text-gray-900">{title}</span>
+        </div>
+        <ChevronDown 
+          className={`w-4 h-4 text-gray-500 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`} 
+        />
+      </button>
+      {isOpen && (
+        <div className="px-4 py-3 bg-white border-t border-gray-200">
+          <div className="prose prose-sm max-w-none text-gray-700">
+            {children}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export interface TipProps {
+  children: React.ReactNode;
+}
+
+export const Tip: React.FC<TipProps> = ({ children }) => {
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-4">
+      <div className="flex items-start">
+        <span className="text-blue-600 mr-3">💡</span>
+        <div className="flex-1">
+          <div className="prose prose-sm max-w-none text-blue-900">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export interface ColumnsProps {
+  cols?: number;
+  gap?: number;
+  className?: string;
+  children: React.ReactNode;
+}
+
+export const Columns: React.FC<ColumnsProps> = ({ cols = 2, gap = 16, className, children }) => {
+  const safeCols = Number(cols) > 0 ? Number(cols) : 1;
+  return (
+    <div
+      className={cn("my-4", className)}
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${safeCols}, minmax(0, 1fr))`,
+        gap,
+      }}
+    >
+      {children}
     </div>
   );
 };

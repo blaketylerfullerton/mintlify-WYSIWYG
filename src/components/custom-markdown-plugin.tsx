@@ -1,6 +1,9 @@
-import { Note, Callout, CardProp, Code } from "./custom-components";
+import { Note, Callout, CardProp, Code, AccordionGroup, Accordion, Tip, Columns } from "./custom-components";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Card as UICard } from "./ui/card";
 
-// Simple custom component parser that works with ReactMarkdown
+// Enhanced custom component parser that works with ReactMarkdown
 export function parseCustomComponents(markdown: string): string {
   // Replace custom component syntax with HTML-like syntax that ReactMarkdown can handle
   let processed = markdown;
@@ -16,6 +19,32 @@ export function parseCustomComponents(markdown: string): string {
         }">${content?.trim() || ""}</div>`;
       }
     );
+
+    // Handle nested components more robustly
+    // First, handle <AccordionGroup> with nested <Accordion> components
+    processed = processNestedComponents(processed, 'AccordionGroup', (content: string) => {
+      // Process nested Accordion components within the group
+      return processNestedComponents(content, 'Accordion', (accordionContent: string, attributes?: string) => {
+        const attrs = parseJSXAttributes(attributes || "");
+        const icon = attrs.icon || "chevron-right";
+        const title = attrs.title || "";
+        return `<div data-component="accordion" data-icon="${icon}" data-title="${title}">${accordionContent}</div>`;
+      });
+    });
+
+    // Handle standalone <Accordion> components (outside of groups)
+    processed = processNestedComponents(processed, 'Accordion', (content: string, attributes?: string) => {
+      const attrs = parseJSXAttributes(attributes || "");
+      const icon = attrs.icon || "chevron-right";
+      const title = attrs.title || "";
+      return `<div data-component="accordion" data-icon="${icon}" data-title="${title}">${content}</div>`;
+    });
+
+    // Handle <Tip> syntax
+    const tipRegex = /<Tip>\s*([\s\S]*?)<\/Tip>/g;
+    processed = processed.replace(tipRegex, (_match, content) => {
+      return `<div data-component="tip">${content?.trim() || ""}</div>`;
+    });
 
     // Handle <Note> syntax
     const noteRegex = /<Note(?:\s+([^>]*))?\s*>([\s\S]*?)<\/Note>/g;
@@ -57,26 +86,35 @@ export function parseCustomComponents(markdown: string): string {
       }</div>`;
     });
 
-    // Handle :::callout syntax (keeping for backward compatibility)
-    const calloutRegex = /:::callout(?:\s+([^:\n]+))?\n([\s\S]*?)\n:::/g;
-    processed = processed.replace(
-      calloutRegex,
-      (_match, attributes, content) => {
-        const attrs = parseAttributes(attributes || "");
-        const emoji = attrs.emoji || "💡";
-        const title = attrs.title || "";
+    // Handle <Columns> ... </Columns>
+    processed = processNestedComponents(processed, 'Columns', (content: string, attributes?: string) => {
+      const attrs = parseJSXAttributes(attributes || "");
+      const cols = attrs.cols || "2";
+      const gap = attrs.gap || "16";
+      return `<div data-component="columns" data-cols="${cols}" data-gap="${gap}">${content}</div>`;
+    });
 
-        return `<div data-component="callout" data-emoji="${emoji}" data-title="${title}">${
-          content?.trim() || ""
-        }</div>`;
-      }
-    );
+    // Generic component passthrough for any known component name
+    processed = transformGenericComponents(processed, Object.keys(componentRegistry));
   } catch (error) {
     console.error("Error parsing custom components:", error);
     return markdown; // Return original markdown if parsing fails
   }
 
   return processed;
+}
+
+// Helper function to process nested components more robustly
+function processNestedComponents(
+  content: string, 
+  componentName: string, 
+  processor: (content: string, attributes?: string) => string
+): string {
+  const regex = new RegExp(`<${componentName}(?:\\s+([^>]*))?\\s*>([\\s\\S]*?)<\\/${componentName}>`, 'g');
+  
+  return content.replace(regex, (_match, attributes, innerContent) => {
+    return processor(innerContent?.trim() || "", attributes);
+  });
 }
 
 // Parse JSX-style attributes from string like: title="Plant Store Endpoints" icon="leaf" href="..."
@@ -105,10 +143,115 @@ function parseAttributes(attributeString: string): Record<string, string> {
   return attrs;
 }
 
-// Custom component renderer for ReactMarkdown
+// Registry of components that can be invoked by name from markdown, e.g. <Input />, <Button />
+const componentRegistry: Record<string, React.ComponentType<any>> = {
+  // UI components
+  Input,
+  Button,
+  Card: UICard,
+  // Custom components
+  Note,
+  Callout,
+  Accordion,
+  AccordionGroup,
+  Tip,
+};
+
+// Replace JSX-like tags for known components with data-* placeholders ReactMarkdown can handle
+function transformGenericComponents(markdown: string, allowedNames: string[]): string {
+  // Block form: <Name a="b">children</Name>
+  const blockRegex = new RegExp(
+    `<(${allowedNames.join("|")})(?:\\s+([^>]*))?\\s*>([\\s\\S]*?)<\\/\\1>`,
+    "g"
+  );
+
+  let output = markdown.replace(blockRegex, (_m, name, attributes, inner) => {
+    const attrs = parseJSXAttributes(attributes || "");
+    const dataProps = Object.entries(attrs)
+      .map(([k, v]) => `data-prop-${k}="${escapeHtmlAttr(v)}"`)
+      .join(" ");
+
+    return `<div data-component="generic" data-name="${name}" ${dataProps}>${
+      inner?.trim() || ""
+    }</div>`;
+  });
+
+  // Self-closing form: <Name a="b" />
+  const selfClosingRegex = new RegExp(
+    `<(${allowedNames.join("|")})(?:\\s+([^/>]*))?\\s*/>`,
+    "g"
+  );
+
+  output = output.replace(selfClosingRegex, (_m, name, attributes) => {
+    const attrs = parseJSXAttributes(attributes || "");
+    const dataProps = Object.entries(attrs)
+      .map(([k, v]) => `data-prop-${k}="${escapeHtmlAttr(v)}"`)
+      .join(" ");
+
+    return `<div data-component="generic" data-name="${name}" ${dataProps}></div>`;
+  });
+
+  return output;
+}
+
+function escapeHtmlAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Enhanced custom component renderer for ReactMarkdown
 export const customComponentRenderer = {
   div: ({ node, children, ...props }: any) => {
     const component = props["data-component"];
+
+    if (component === "generic") {
+      const name = props["data-name"] as string;
+      const Component = componentRegistry[name];
+      if (!Component) {
+        return <div {...props}>{children}</div>;
+      }
+
+      // Extract props from data-prop-*
+      const componentProps: Record<string, any> = {};
+      Object.keys(props)
+        .filter((key) => key.startsWith("data-prop-"))
+        .forEach((key) => {
+          const propName = key.replace("data-prop-", "");
+          componentProps[propName] = props[key];
+        });
+
+      return <Component {...componentProps}>{children}</Component>;
+    }
+
+    if (component === "accordion-group") {
+      return (
+        <AccordionGroup>
+          {children}
+        </AccordionGroup>
+      );
+    }
+
+    if (component === "accordion") {
+      const icon = props["data-icon"];
+      const title = props["data-title"];
+
+      return (
+        <Accordion icon={icon} title={title}>
+          {children}
+        </Accordion>
+      );
+    }
+
+    if (component === "tip") {
+      return (
+        <Tip>
+          {children}
+        </Tip>
+      );
+    }
 
     if (component === "code") {
       const language = props["data-language"];
@@ -146,6 +289,12 @@ export const customComponentRenderer = {
           {children}
         </CardProp>
       );
+    }
+
+    if (component === "columns") {
+      const cols = props["data-cols"];
+      const gap = props["data-gap"];
+      return <Columns cols={Number(cols)} gap={Number(gap)}>{children}</Columns>;
     }
 
     if (component === "callout") {
