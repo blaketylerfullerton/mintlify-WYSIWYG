@@ -2,7 +2,8 @@
 
 A modern, full-featured Markdown documentation editor built specifically for creating and editing technical documentation. This application provides a Mintlify-like editing experience with real-time preview, custom components, and organized file management.
 
-![Mintlify Logo](public/light.svg)
+<img width="320" height="320" alt="image" src="https://github.com/user-attachments/assets/4f8692e8-296e-46e0-9f2d-5c50fd481510" />
+
 
 
 ## ✨ Custom Features
