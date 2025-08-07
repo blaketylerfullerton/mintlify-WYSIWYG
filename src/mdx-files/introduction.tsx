@@ -1,4 +1,7 @@
-export const introductionContent = `# Introduction
+export const introductionContent = `---
+title: 'Introduction'
+description: 'Example section for showcasing API endpoints'
+---
 
 <Note>
   If you're not looking to build API reference documentation, you can delete
@@ -11,7 +14,7 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 
 <Card
   title="Plant Store Endpoints"
-  icon="leaf"
+  
   href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
 >
   View the OpenAPI specification file

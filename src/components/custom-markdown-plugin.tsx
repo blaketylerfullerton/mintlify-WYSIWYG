@@ -1,21 +1,40 @@
-import { Note, Callout } from "./custom-components";
+import { Note, Callout, CardProp, Code } from "./custom-components";
 
 // Simple custom component parser that works with ReactMarkdown
 export function parseCustomComponents(markdown: string): string {
   // Replace custom component syntax with HTML-like syntax that ReactMarkdown can handle
   let processed = markdown;
 
-  // Handle :::note syntax
-  const noteRegex = /:::note(?:\s+([^:\n]+))?\n([\s\S]*?)\n:::/g;
+  // Handle custom code blocks with filename: ```language filename
+  const codeRegex = /```(\w+)(?:\s+([^\n]+))?\n([\s\S]*?)```/g;
+  processed = processed.replace(codeRegex, (language, filename, content) => {
+    return `<div data-component="code" data-language="${language}" data-filename="${
+      filename || ""
+    }">${content.trim()}</div>`;
+  });
+
+  // Handle <Note> syntax
+  const noteRegex = /<Note(?:\s+([^>]*))?\s*>([\s\S]*?)<\/Note>/g;
   processed = processed.replace(noteRegex, (attributes, content) => {
-    const attrs = parseAttributes(attributes || "");
+    const attrs = parseJSXAttributes(attributes || "");
     const type = attrs.type || "info";
     const title = attrs.title || "";
 
     return `<div data-component="note" data-type="${type}" data-title="${title}">${content.trim()}</div>`;
   });
 
-  // Handle :::callout syntax
+  // Handle <Card> syntax
+  const cardRegex = /<Card(?:\s+([^>]*))?\s*>([\s\S]*?)<\/Card>/g;
+  processed = processed.replace(cardRegex, (attributes, content) => {
+    const attrs = parseJSXAttributes(attributes || "");
+    const title = attrs.title || "";
+    const icon = attrs.icon || "";
+    const href = attrs.href || "";
+
+    return `<div data-component="card" data-title="${title}" data-icon="${icon}" data-href="${href}">${content.trim()}</div>`;
+  });
+
+  // Handle :::callout syntax (keeping for backward compatibility)
   const calloutRegex = /:::callout(?:\s+([^:\n]+))?\n([\s\S]*?)\n:::/g;
   processed = processed.replace(calloutRegex, (attributes, content) => {
     const attrs = parseAttributes(attributes || "");
@@ -26,6 +45,19 @@ export function parseCustomComponents(markdown: string): string {
   });
 
   return processed;
+}
+
+// Parse JSX-style attributes from string like: title="Plant Store Endpoints" icon="leaf" href="..."
+function parseJSXAttributes(attributeString: string): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  const regex = /(\w+)="([^"]*)"/g;
+  let match;
+
+  while ((match = regex.exec(attributeString)) !== null) {
+    attrs[match[1]] = match[2];
+  }
+
+  return attrs;
 }
 
 // Parse attributes from string like: type="warning" title="Important Note"
@@ -46,6 +78,17 @@ export const customComponentRenderer = {
   div: ({ node, children, ...props }: any) => {
     const component = props["data-component"];
 
+    if (component === "code") {
+      const language = props["data-language"];
+      const filename = props["data-filename"];
+
+      return (
+        <Code language={language} filename={filename}>
+          {children}
+        </Code>
+      );
+    }
+
     if (component === "note") {
       const type = props["data-type"] as
         | "info"
@@ -58,6 +101,18 @@ export const customComponentRenderer = {
         <Note type={type} title={title}>
           {children}
         </Note>
+      );
+    }
+
+    if (component === "card") {
+      const title = props["data-title"];
+      const icon = props["data-icon"];
+      const href = props["data-href"];
+
+      return (
+        <CardProp title={title} icon={icon} href={href}>
+          {children}
+        </CardProp>
       );
     }
 

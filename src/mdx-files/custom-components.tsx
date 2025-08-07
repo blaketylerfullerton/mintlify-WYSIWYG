@@ -1,24 +1,20 @@
 export const customComponents = `
-##This editor supports custom components.
-here are some examples:
-### Notes
-You can create different types of notes:
+## This editor supports custom components.
+<Note>
+  If you're not looking to build API reference documentation, you can delete
+  this section by removing the api-reference folder.
+</Note>
 
-:::note type="info" title="Information"
-This is an informational note. Perfect for providing additional context or helpful tips.
-:::
+<Note type="warning" title="Important">
+  This is a warning note with a title.
+</Note>
 
-:::note type="warning" title="Important Warning"
-This is a warning note. Use this to highlight important information that users should pay attention to.
-:::
-
-:::note type="success" title="Success!"
-This is a success note. Great for confirmation messages or positive feedback.
-:::
-
-:::note type="error" title="Error"
-This is an error note. Use this for error messages or critical warnings.
-:::
-
+<Card
+  title="Plant Store Endpoints"
+  icon="🍃"
+  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+>
+  View the OpenAPI specification file
+</Card>
 
 `;
