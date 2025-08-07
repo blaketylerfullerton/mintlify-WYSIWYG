@@ -20,8 +20,12 @@ export default function Layout({
     <SidebarProvider>
       <AppSidebar currentFile={currentFile} onFileSelect={onFileSelect} />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between">
           <SidebarTrigger className="-ml-1" />
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold">Blakes Mintlify </h1>
+            <img src="/favicon.ico" alt="Blakes Mintlify" className="w-6 h-6" />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>

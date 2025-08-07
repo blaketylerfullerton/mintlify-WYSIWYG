@@ -20,6 +20,7 @@ import {
   CheckCircle,
   AlertCircle,
   MessageSquare,
+  Zap,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -43,6 +44,7 @@ interface ToolbarProps {
     callout: () => void;
     copy: () => void;
     download: () => void;
+    testLargeContent?: () => void;
   };
   showPreview: boolean;
   onTogglePreview: () => void;
@@ -161,6 +163,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
         {/* Actions */}
         <div className="flex items-center gap-1">
+          {actions.testLargeContent && (
+            <ToolbarButton
+              onClick={actions.testLargeContent}
+              title="Test with Large Content (for virtualization demo)"
+            >
+              <Zap size={16} />
+            </ToolbarButton>
+          )}
           <ToolbarButton onClick={actions.copy} title="Copy to Clipboard">
             <Copy size={16} />
           </ToolbarButton>

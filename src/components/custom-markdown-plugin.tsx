@@ -10,7 +10,7 @@ export function parseCustomComponents(markdown: string): string {
     const codeRegex = /```(\w+)(?:\s+([^\n]+))?\n([\s\S]*?)```/g;
     processed = processed.replace(
       codeRegex,
-      (match, language, filename, content) => {
+      (_match, language, filename, content) => {
         return `<div data-component="code" data-language="${language}" data-filename="${
           filename || ""
         }">${content?.trim() || ""}</div>`;
@@ -19,7 +19,7 @@ export function parseCustomComponents(markdown: string): string {
 
     // Handle <Note> syntax
     const noteRegex = /<Note(?:\s+([^>]*))?\s*>([\s\S]*?)<\/Note>/g;
-    processed = processed.replace(noteRegex, (match, attributes, content) => {
+    processed = processed.replace(noteRegex, (_match, attributes, content) => {
       const attrs = parseJSXAttributes(attributes || "");
       const type = attrs.type || "info";
       const title = attrs.title || "";
@@ -33,7 +33,7 @@ export function parseCustomComponents(markdown: string): string {
     const noteColonRegex = /:::note(?:\s+([^:\n]+))?\n([\s\S]*?)\n:::/g;
     processed = processed.replace(
       noteColonRegex,
-      (match, attributes, content) => {
+      (_match, attributes, content) => {
         const attrs = parseAttributes(attributes || "");
         const type = attrs.type || "info";
         const title = attrs.title || "";
@@ -46,7 +46,7 @@ export function parseCustomComponents(markdown: string): string {
 
     // Handle <Card> syntax
     const cardRegex = /<Card(?:\s+([^>]*))?\s*>([\s\S]*?)<\/Card>/g;
-    processed = processed.replace(cardRegex, (match, attributes, content) => {
+    processed = processed.replace(cardRegex, (_match, attributes, content) => {
       const attrs = parseJSXAttributes(attributes || "");
       const title = attrs.title || "";
       const icon = attrs.icon || "";
@@ -61,7 +61,7 @@ export function parseCustomComponents(markdown: string): string {
     const calloutRegex = /:::callout(?:\s+([^:\n]+))?\n([\s\S]*?)\n:::/g;
     processed = processed.replace(
       calloutRegex,
-      (match, attributes, content) => {
+      (_match, attributes, content) => {
         const attrs = parseAttributes(attributes || "");
         const emoji = attrs.emoji || "💡";
         const title = attrs.title || "";

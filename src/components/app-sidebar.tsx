@@ -11,7 +11,7 @@ import {
 } from "../components/ui/sidebar";
 import { useState, useMemo } from "react";
 import { getAllFolders, getFilesByFolder } from "../lib/initialFileContents";
-
+import { VersionSwitcher } from "./version-switcher";
 interface AppSidebarProps {
   currentFile?: string;
   onFileSelect?: (fileName: string) => void;
@@ -55,7 +55,10 @@ export function AppSidebar({ currentFile, onFileSelect }: AppSidebarProps) {
   return (
     <Sidebar>
       <SidebarHeader>
-        <img src="/favicon.ico" alt="Mintlify Logo" className="w-10 h-10" />
+        <VersionSwitcher
+          names={["OpenAI", "Claude", "Gemini"]}
+          defaultName={"OpenAI"}
+        />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

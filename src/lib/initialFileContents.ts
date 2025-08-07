@@ -12,10 +12,11 @@ export interface FileConfig {
 
 export const fileConfigs: Record<string, FileConfig> = {
   "custom-components.mdx": {
-    path: "blakes-mintlify-app/custom-components.mdx",
+    path: "blakes-components/custom-components.mdx",
     title: "Custom Components",
-    folder: "blakes-mintlify-app",
+    folder: "blakes-components",
   },
+
   "claude-code.mdx": {
     path: "ai-tools/claude-code.mdx",
     title: "Claude Code Guide",

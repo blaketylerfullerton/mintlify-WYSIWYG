@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef } from "react";
 
 import { Toolbar } from "./toolbar";
+import { generateMegaMarkdown } from "../utils/test-content-generator";
 import { Preview } from "./preview";
-
 export interface MarkdownEditorProps {
   initialValue?: string;
   onChange?: (value: string) => void;
@@ -168,6 +168,15 @@ console.log(example);
       a.click();
       URL.revokeObjectURL(url);
     },
+
+    testLargeContent: () => {
+      const largeContent = generateMegaMarkdown();
+      handleMarkdownChange(largeContent);
+      // Ensure preview is visible to see virtualization in action
+      if (!showPreview) {
+        setShowPreview(true);
+      }
+    },
   };
 
   return (
@@ -180,18 +189,18 @@ console.log(example);
         onTogglePreview={() => setShowPreview(!showPreview)}
       />
 
-      <div className="flex h-96 md:h-[700px]">
+      <div className="flex h-96 md:h-[700px] relative">
         {/* Editor Pane */}
         <div
           className={`${
             showPreview ? "w-1/2" : "w-full"
-          } border-r border-gray-200 bg-gray-50`}
+          } border-r border-gray-200 bg-gray-50 relative flex-shrink-0`}
         >
           <textarea
             ref={textareaRef}
             value={markdown}
             onChange={(e) => handleMarkdownChange(e.target.value)}
-            className="w-full h-full p-4 resize-none border-none outline-none bg-transparent font-mono text-sm leading-6 text-gray-800"
+            className="absolute inset-0 p-4 resize-none border-none outline-none bg-transparent font-mono text-sm leading-6 text-gray-800"
             placeholder="Start typing your markdown here..."
             spellCheck={false}
           />
