@@ -1,10 +1,9 @@
-# Mintlify Documentation Editor
+# Mintlify (like) Documentation Editor
 
 A modern, full-featured Markdown documentation editor built specifically for creating and editing technical documentation. This application provides a Mintlify-like editing experience with real-time preview, custom components, and organized file management.
 
 ![Mintlify Logo](public/light.svg)
 
-# This was built as a demonstration for the mintlify team
 
 ## ✨ Custom Features
 - **Custom Components**:
