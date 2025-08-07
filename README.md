@@ -19,6 +19,14 @@ A modern, full-featured Markdown documentation editor built specifically for cre
 - **Custom Components**: Enhanced documentation elements (Notes, Callouts, Cards)
 
 ### 🎨 Custom Documentation Components
+## _Card Component_
+<img width="788" height="110" alt="image" src="https://github.com/user-attachments/assets/b676c3fc-f3de-4cf0-922e-7c675a92effd" />
+
+## _Note Component_
+<img width="794" height="91" alt="image" src="https://github.com/user-attachments/assets/5f0f0fde-a0c3-443c-be36-5c5a1ba12f55" />
+
+## _Note With Warning_
+<img width="782" height="97" alt="image" src="https://github.com/user-attachments/assets/46ea1b30-1bcd-4841-842f-099fbdd505fa" />
 
 #### **Notes**: Four types of contextual information blocks
 
