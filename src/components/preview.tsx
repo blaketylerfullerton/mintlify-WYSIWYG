@@ -15,7 +15,10 @@ interface PreviewProps {
 
 export const Preview: React.FC<PreviewProps> = ({ markdown }) => {
   // Process custom components before passing to ReactMarkdown
-  const processedMarkdown = parseCustomComponents(markdown);
+  // Use useMemo to prevent unnecessary re-processing
+  const processedMarkdown = React.useMemo(() => {
+    return parseCustomComponents(markdown);
+  }, [markdown]);
 
   return (
     <div className="w-1/2 overflow-auto bg-white">

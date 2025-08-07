@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarHeader,
 } from "../components/ui/sidebar";
 import { useState, useMemo } from "react";
 import { getAllFolders, getFilesByFolder } from "../lib/initialFileContents";
@@ -53,6 +54,9 @@ export function AppSidebar({ currentFile, onFileSelect }: AppSidebarProps) {
 
   return (
     <Sidebar>
+      <SidebarHeader>
+        <img src="/favicon.ico" alt="Mintlify Logo" className="w-10 h-10" />
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
