@@ -10,8 +10,6 @@ A modern, full-featured Markdown documentation editor built specifically for cre
   - Mimics Mintlify's components
   - Built for reusability and theme compliance
 
-
-
 ### 📝 Advanced Markdown Editor
 
 - **Live Preview**: Real-time markdown rendering with side-by-side editing view
@@ -38,50 +36,6 @@ A modern, full-featured Markdown documentation editor built specifically for cre
 - Syntax highlighting with Prism.js
 - Filename display support
 - Multiple language support
-
-### 🗂️ File Organization
-
-- **Sidebar Navigation**: Organized folder structure (AI Tools, API Reference, etc.)
-- **Multi-file Support**: Switch between different documentation files
-- **File Caching**: Efficient content loading and management
-- **Version Control Ready**: Git-friendly structure
-
-### 🎛️ Editor Features
-
-- **Keyboard Shortcuts**: Standard formatting shortcuts (Ctrl+B, Ctrl+I, etc.)
-- **Copy & Download**: Export content to clipboard or .md files
-- **Responsive Design**: Works seamlessly across different screen sizes
-- **Toggle Preview**: Show/hide preview pane as needed
-
-## 🏗️ Architecture
-
-### **Component Structure**
-
-```
-src/
-├── components/
-│   ├── markdown-editor.tsx         # Main editor component with toolbar integration
-│   ├── toolbar.tsx                 # Rich formatting toolbar with all editing tools
-│   ├── preview.tsx                 # Live markdown preview with custom rendering
-│   ├── layout.tsx                  # Application layout with sidebar integration
-│   ├── app-sidebar.tsx             # File navigation and folder organization
-│   ├── custom-markdown-plugin.tsx  # Custom component parser and renderer
-│   ├── custom-components.tsx       # Note, Callout, Card component definitions
-│   └── ui/                         # Reusable UI primitives (Radix UI components)
-├── lib/
-│   └── initialFileContents.ts      # File management and content loading system
-├── mdx-files/                      # Sample documentation files
-├── utils/                          # Utility functions and helpers
-└── hooks/                          # Custom React hooks
-```
-
-### **Data Flow**
-
-1. **File Management**: `App.tsx` manages file state and routing between documents
-2. **Content Loading**: `initialFileContents.ts` handles loading and caching file content
-3. **Markdown Processing**: `custom-markdown-plugin.tsx` parses custom syntax into HTML
-4. **Live Preview**: `preview.tsx` renders processed markdown with syntax highlighting
-5. **Editor Actions**: `toolbar.tsx` provides formatting actions that modify markdown text
 
 ### **Custom Component Pipeline**
 
@@ -115,18 +69,13 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 - **rehype-raw** - Raw HTML processing in markdown
 - **react-syntax-highlighter** - Code syntax highlighting with Prism.js
 
-### **Development Tools**
-
-- **ESLint** - Code quality and consistency
-- **TypeScript ESLint** - TypeScript-specific linting rules
-- **Prettier** - Code formatting
 
 ## 📦 Installation & Setup
 
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/blaketylerfullerton/mintlify-WYSIWYG)
    cd mintlify-app
    ```
 
@@ -149,8 +98,6 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 
 - `pnpm dev` - Start development server with hot reload
 - `pnpm build` - Build for production (TypeScript compilation + Vite build)
-- `pnpm preview` - Preview production build locally
-- `pnpm lint` - Run ESLint for code quality checks
 
 ## 🎯 How It Works
 
@@ -224,9 +171,7 @@ fileConfigs["new-file.mdx"] = {
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
 
-This project is private and proprietary to Mintlify.
 
 ---
 
