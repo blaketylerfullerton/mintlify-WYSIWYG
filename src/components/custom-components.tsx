@@ -7,8 +7,8 @@ import {
   ExternalLink,
   Copy,
   Check,
-  ChevronDown,
-  ChevronRight,
+  ChevronDown
+  
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { cn } from "../lib/utils";
