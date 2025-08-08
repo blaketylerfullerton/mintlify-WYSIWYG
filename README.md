@@ -30,17 +30,6 @@ A modern, full-featured Markdown documentation editor built specifically for cre
 ## _Note With Warning_
 <img width="782" height="97" alt="image" src="https://github.com/user-attachments/assets/46ea1b30-1bcd-4841-842f-099fbdd505fa" />
 
-#### **Notes**: Four types of contextual information blocks
-
-- `:::note type="info" title="Information"` - Informational notes
-- `:::note type="warning" title="Warning"` - Important warnings
-- `:::note type="success" title="Success"` - Success messages
-- `:::note type="error" title="Error"` - Error notifications
-
-#### **Callouts**: Eye-catching highlighted sections
-
-- `:::callout emoji="💡" title="Pro Tip"` - Custom emoji callouts
-
 #### **Enhanced Code Blocks**:
 
 - Syntax highlighting with Prism.js
