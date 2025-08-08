@@ -17,6 +17,9 @@ A modern, full-featured Markdown documentation editor built specifically for cre
 - **File Management**: Multi-file editing with organized folder structure
 - **Custom Components**: Enhanced documentation elements (Notes, Callouts, Cards)
 
+# Edit in both sides
+<img width="1429" height="778" alt="image" src="https://github.com/user-attachments/assets/337fa958-1565-4886-95eb-b4f0eeb8c992" />
+
 ### 🎨 Custom Documentation Components
 ## _Card Component_
 <img width="788" height="110" alt="image" src="https://github.com/user-attachments/assets/b676c3fc-f3de-4cf0-922e-7c675a92effd" />
