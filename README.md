@@ -160,25 +160,6 @@ content = replaceOutsideCodeFences(content, old, newText);
 - Custom components and code blocks are intentionally not made editable in this pass.
 - Complex nested markdown edge cases may require AST‑position mapping in the future for perfect fidelity.
 
-### **Custom Component Syntax**
-
-The editor supports special syntax that gets converted to styled React components:
-
-````markdown
-:::note type="warning" title="Important"
-This creates a styled warning note component
-:::
-
-:::callout emoji="🚀" title="Getting Started"
-This creates an eye-catching callout box
-:::
-
-```javascript filename="example.js"
-// Code blocks support filename display
-const example = "Hello World!";
-```
-````
-
 
 
 ### **File Organization System**
