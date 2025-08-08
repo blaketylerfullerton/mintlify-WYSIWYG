@@ -60,6 +60,7 @@ Markdown Input → Custom Parser → HTML Transformation → React Components �
 - **Tailwind CSS 4.1.11** - Utility-first CSS framework
 - **Radix UI** - Headless component primitives (Dialog, Dropdown, Sidebar)
 - **Lucide React** - Modern icon library
+- **Shadcn Components** - Component library
 
 ### **Markdown Processing**
 
