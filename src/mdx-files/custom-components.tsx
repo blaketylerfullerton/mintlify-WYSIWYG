@@ -1,4 +1,7 @@
-export const customComponents = `
+export const customComponents = `---
+title: 'Custom Components'
+description: 'Example section for showcasing Custom Components'
+---
 ## This editor supports custom components.
 <Note>
   If you're not looking to build API reference documentation, you can delete

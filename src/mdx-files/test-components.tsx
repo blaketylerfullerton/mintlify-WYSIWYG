@@ -1,4 +1,7 @@
-export const testComponentsContent = `# Testing Custom Components
+export const testComponentsContent = `---
+title: 'Test Components'
+description: 'Example section for showcasing Testing Custom Components'
+---
 
 This is a test of the custom components in your WYSIWYG editor.
 
@@ -89,4 +92,4 @@ This is regular **bold** and *italic* text.
 | John | 25  | NYC  |
 | Jane | 30  | LA   |
 | Bob  | 35  | SF   |
-`; 
+`;

@@ -75,6 +75,11 @@ console.log(example);
   const [showPreview, setShowPreview] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Sync internal state when initialValue changes (e.g., after async load or file switch)
+  React.useEffect(() => {
+    setMarkdown(initialValue ?? "");
+  }, [initialValue]);
+
   const handleMarkdownChange = useCallback(
     (value: string) => {
       setMarkdown(value);
